@@ -5,10 +5,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest --watch",
+    "test": "jest",
     "test:ci": "jest --ci"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "next": "latest",
     "react": "16.12.0",
     "react-dom": "16.12.0"
