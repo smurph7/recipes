@@ -53,8 +53,13 @@ const Home = ({ ingredients }) => {
             <Card props={props} />
             <Card props={props} />
             <Card props={props} />
+            <Card props={props} />
+            <Card props={props} />
           </div>
         </div>
+      </div>
+      <div className={styles.footer}>
+        <p>Powered by me</p>
       </div>
     </div>
   );
