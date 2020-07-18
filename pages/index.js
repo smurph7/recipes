@@ -1,6 +1,6 @@
 import Head from 'next/head';
-import Card from './components/card';
-import CheckboxList from './components/checkbox';
+import Card from '../components/RecipeCard';
+import CheckboxList from '../components/IngCheckbox';
 import styles from './index.module.sass';
 import { getIngredientsList } from './api/ingredients';
 
