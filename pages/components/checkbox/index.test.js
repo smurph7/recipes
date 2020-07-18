@@ -4,7 +4,7 @@ import { Checkbox, getCheckboxes } from '.';
 
 describe('Checkbox', () => {
   it('should render the props passed in', () => {
-    const name = 'name';
+    const name = 'Name';
     const id = '1';
 
     const { getByText, getByTestId } = render(<Checkbox name={name} id={id} />);

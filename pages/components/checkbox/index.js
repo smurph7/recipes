@@ -1,12 +1,16 @@
 import styles from './index.module.sass';
+import { capitaliseFirstLetter } from '../../utils';
 
 export const getCheckboxes = (ingredients) => {
   return ingredients.map((ingredient, index) => {
-    return <Checkbox name={ingredient.name} id={index.toString()} key={index} />;
+    return (
+      <Checkbox name={ingredient.name} id={index.toString()} key={index} />
+    );
   });
 };
 
 export const Checkbox = ({ name, id }) => {
+  const nameString = capitaliseFirstLetter(name);
   return (
     <div className={styles.checkboxRow} key={id}>
       <div className={styles.checkbox}>
@@ -17,7 +21,7 @@ export const Checkbox = ({ name, id }) => {
           value={name}
         />
       </div>
-      <p className={styles.text}>{name}</p>
+      <p className={styles.text}>{nameString}</p>
     </div>
   );
 };
