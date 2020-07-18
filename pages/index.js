@@ -6,6 +6,7 @@ import Recipe from '../components/recipe';
 import styles from './index.module.sass';
 import { getIngredientsList, getRandomRecipes } from './api/api';
 import { CancelOutlined } from '@material-ui/icons';
+import { subTitle, recipeError } from '../constants';
 
 export const getStaticProps = async () => {
   const ingredients = await getIngredientsList();
@@ -47,9 +48,7 @@ class Home extends React.Component {
           <div className={styles.recipeContainer}>
             <div className={styles.heading}>
               <p className={styles.title}>Recipes</p>
-              <p className={styles.text}>
-                {`Here are some recipes you might like to try!\nSelect from the ingredients you have on hand to find recipes tailored to you.`}
-              </p>
+              <p className={styles.text}>{subTitle}</p>
             </div>
             {isRecipeVisible && (
               <div className={styles.cardContainer}>
@@ -66,12 +65,8 @@ class Home extends React.Component {
             )}
             <div className={styles.cardContainer}>
               {recipes.length === 0 && (
-                <div className={styles.errorMessage}>
-                  <p>Oops! We couldn't find any recipes.</p>
-                  <p>
-                    Try refreshing the page or choosing some different
-                    ingredients.
-                  </p>
+                <div data-testid='error' className={styles.text}>
+                  <p>{recipeError}</p>
                 </div>
               )}
               {recipes.map((item, key) => (

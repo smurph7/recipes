@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { render } from '@testing-library/react';
 import Home from '../pages';
+import { recipeError } from '../constants';
 
 const ingredients = [
   {
@@ -41,12 +42,14 @@ const recipes = [
   },
 ];
 
+const props = { ingredients, recipes };
+
 it('should render correctly', () => {
-  render(<Home ingredients={ingredients} />);
+  render(<Home {...props} />);
 });
 
 it('should show recipe', () => {
-  const wrapper = shallow(<Home ingredients={ingredients} />);
+  const wrapper = shallow(<Home {...props} />);
   const instance = wrapper.instance();
   jest.spyOn(instance, 'setState');
   instance.displayRecipe();
@@ -54,9 +57,15 @@ it('should show recipe', () => {
 });
 
 it('should hide recipe', () => {
-  const wrapper = shallow(<Home ingredients={ingredients} />);
+  const wrapper = shallow(<Home {...props} />);
   const instance = wrapper.instance();
   jest.spyOn(instance, 'setState');
   instance.hideRecipe();
   expect(instance.setState).toHaveBeenCalledWith({ isRecipeVisible: false });
+});
+
+it('should show error message if recipes is empty', () => {
+  const { getByTestId } = render(<Home {...{ ingredients, recipes: [] }} />);
+  const error = getByTestId('error');
+  expect(error).toBeInTheDocument();
 });
