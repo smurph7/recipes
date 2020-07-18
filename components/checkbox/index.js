@@ -1,5 +1,5 @@
 import styles from './index.module.sass';
-import { capitaliseFirstLetter } from '../../Utilities';
+import { capitaliseFirstLetter } from '../../utils';
 
 export const getCheckboxes = (ingredients) => {
   return ingredients.map((ingredient, index) => {
