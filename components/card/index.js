@@ -1,9 +1,9 @@
 import styles from './index.module.sass';
 
 const Card = ({ props }) => {
-  const { image, title } = props;
+  const { image, title, onClick } = props;
   return (
-    <div className={styles.cardContainer}>
+    <div onClick={onClick} className={styles.cardContainer}>
       <div className={styles.card}>
         <img className={styles.cardImage} src={image} alt={title} />
         <div className={styles.cardHeading}>
