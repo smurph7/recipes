@@ -20,8 +20,8 @@ const Home = ({ ingredients }) => {
         <p className={styles.title}>Recipes</p>
         <div className={styles.headerRight}></div>
       </div>
-      <div className={styles.outerContainer}>
-        <div className={styles.leftContainer}>
+      <div className={styles.container}>
+        <div className={styles.ingredientsContainer}>
           <div className={styles.checkboxContainer}>
             <div className={styles.checkboxListTitle}>
               <p>Your Ingredients</p>
@@ -29,7 +29,7 @@ const Home = ({ ingredients }) => {
             <CheckboxList ingredients={ingredients} />
           </div>
         </div>
-        <div className={styles.container}>
+        <div className={styles.recipeContainer}>
           <Head>
             <title>Recipes</title>
             <link rel="icon" href="/favicon.ico" />
