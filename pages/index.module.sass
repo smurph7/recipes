@@ -1,3 +1,7 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto+|Open+Sans)
+$font-title: Open Sans, sans-serif
+$font-text: Roboto, sans-serif
+
 .container
     display: flex
     flex-direction: row
@@ -27,18 +31,25 @@
 .title
     font-size: 40px
     line-height: 0
+    font-family: $font-title
 
 .text
     white-space: pre-line
+    font-family: $font-text
+
+.errorMessage
+    font-family: $font-text
 
 .checkboxListTitle
-    font-weight: bold
+    font-family: $font-title
+    font-size: 16px
 
 .checkboxContainer
     display: flex
     flex-direction: column
     padding-top: 100px
     padding-left: 40px
+    font-family: $font-text
 
 .recipeCard
     display: flex

@@ -4,11 +4,13 @@ import Card from '../components/card';
 import CheckboxList from '../components/checkbox';
 import Recipe from '../components/recipe';
 import styles from './index.module.sass';
-import { getIngredientsList } from './api/ingredients';
+import { getIngredientsList, getRandomRecipes } from './api/api';
 import { CancelOutlined } from '@material-ui/icons';
 
 export const getStaticProps = async () => {
-  return getIngredientsList();
+  const ingredients = await getIngredientsList();
+  const recipes = await getRandomRecipes();
+  return { props: { ingredients, recipes } };
 };
 
 class Home extends React.Component {
@@ -18,9 +20,8 @@ class Home extends React.Component {
   hideRecipe = () => this.setState({ isRecipeVisible: false });
 
   render() {
-    const { ingredients } = this.props;
+    const { ingredients, recipes } = this.props;
     const { isRecipeVisible } = this.state;
-    const recipes = [{ one: '1' }];
     const cardProps = {
       image: 'https://spoonacular.com/recipeImages/474463-312x231.jpg', //'https://spoonacular.com/recipeImages/584811-312x231.jpg',
       title: 'Southwestern Chicken Taco Pie',
@@ -64,17 +65,18 @@ class Home extends React.Component {
               </div>
             )}
             <div className={styles.cardContainer}>
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
-              <Card props={cardProps} />
+              {recipes.length === 0 && (
+                <div className={styles.errorMessage}>
+                  <p>Oops! We couldn't find any recipes.</p>
+                  <p>
+                    Try refreshing the page or choosing some different
+                    ingredients.
+                  </p>
+                </div>
+              )}
+              {recipes.map((item, key) => (
+                <Card key={key} props={cardProps} />
+              ))}
             </div>
           </div>
         </div>
