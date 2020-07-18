@@ -2,8 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import Card from '.';
 
-describe('Card', () => {
-  it('should render the props passed in', () => {
+it('should render the props passed in', () => {
     const props = {
       title: 'title',
       image: 'image',
@@ -15,4 +14,3 @@ describe('Card', () => {
     expect(title).toBeInTheDocument();
     expect(image).toBeInTheDocument();
   });
-});

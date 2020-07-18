@@ -1,8 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Home from '.';
+import Home from '../pages';
 
-describe('Home', () => {
   it('should render correctly', () => {
     const ingredients = [
       {
@@ -17,4 +16,3 @@ describe('Home', () => {
     ];
     render(<Home ingredients={ingredients} />);
   });
-});

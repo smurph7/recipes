@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { Checkbox, getCheckboxes } from '.';
 
-describe('Checkbox', () => {
   it('should render the props passed in', () => {
     const name = 'Name';
     const id = '1';
@@ -33,4 +32,3 @@ describe('Checkbox', () => {
     ];
     expect(getCheckboxes(ingredients)).toEqual(expectedResult);
   });
-});
