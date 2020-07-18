@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import Card from '.';
 
 describe('Card', () => {
-  it('renders props passed in', () => {
+  it('should render the props passed in', () => {
     const props = {
       title: 'title',
       image: 'image',
