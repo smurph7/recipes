@@ -15,6 +15,7 @@ export const Checkbox = ({ name, id }) => {
     <div className={styles.checkboxRow} key={id}>
       <div className={styles.checkbox}>
         <input
+          className={styles.square}
           data-testid={id}
           type="checkbox"
           name={`option${id}`}

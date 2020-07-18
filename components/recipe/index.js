@@ -3,6 +3,17 @@ const recipe = require('../../mockRecipe.json')[0];
 import { capitaliseFirstLetter } from '../../utils';
 import { Person, Timer } from '@material-ui/icons';
 
+//only pass in this data
+//extendedIngredients
+//analyzedInstructions: [{
+//steps:[{step: 'text'}]
+//}]
+//image
+//title
+//servings
+//readyInMinutes
+
+
 export const IngredientsList = ({ ingredients }) => {
   const listItem = ingredients.map((item, key) => (
     <li className={styles.text} key={key}>

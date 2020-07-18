@@ -4,6 +4,7 @@ import CheckboxList from '../components/checkbox';
 import Recipe from '../components/recipe';
 import styles from './index.module.sass';
 import { getIngredientsList } from './api/ingredients';
+import { CancelOutlined } from '@material-ui/icons';
 
 export const getStaticProps = async () => {
   return getIngredientsList();
@@ -36,6 +37,14 @@ const Home = ({ ingredients }) => {
             <p className={styles.text}>
               {`Here are some recipes you might like to try!\nSelect from the ingredients you have on hand to find recipes tailored to you.`}
             </p>
+          </div>
+          <div className={styles.cardContainer}>
+            <div className={styles.recipeCard}>
+              <div className={styles.close}>
+                <CancelOutlined fontSize="large" />
+              </div>
+              <Recipe />
+            </div>
           </div>
           <div className={styles.cardContainer}>
             <Card props={props} />
