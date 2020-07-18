@@ -1,17 +1,11 @@
 import Head from 'next/head';
 import Card from './components/card';
-import Checkbox from './components/checkbox';
+import CheckboxList from './components/checkbox';
 import styles from './index.module.sass';
 import { getIngredientsList } from './api/ingredients';
 
 export const getStaticProps = async () => {
   return getIngredientsList();
-};
-
-export const getCheckboxes = (ingredients) => {
-  return ingredients.map((ingredient, index) => {
-    return <Checkbox name={ingredient.name} id={index.toString()} />;
-  });
 };
 
 const Home = ({ ingredients }) => {
@@ -32,7 +26,7 @@ const Home = ({ ingredients }) => {
             <div className={styles.checkboxListTitle}>
               <p>Your Ingredients</p>
             </div>
-            {getCheckboxes(ingredients)}
+            <CheckboxList ingredients={ingredients} />
           </div>
         </div>
         <div className={styles.container}>

@@ -1,6 +1,12 @@
 import styles from './index.module.sass';
 
-const Checkbox = ({ name, id }) => {
+export const getCheckboxes = (ingredients) => {
+  return ingredients.map((ingredient, index) => {
+    return <Checkbox name={ingredient.name} id={index.toString()} key={index} />;
+  });
+};
+
+export const Checkbox = ({ name, id }) => {
   return (
     <div className={styles.checkboxRow} key={id}>
       <div className={styles.checkbox}>
@@ -16,4 +22,8 @@ const Checkbox = ({ name, id }) => {
   );
 };
 
-export default Checkbox;
+const CheckboxList = ({ ingredients }) => {
+  return getCheckboxes(ingredients);
+};
+
+export default CheckboxList;

@@ -1,9 +1,9 @@
 import React from 'react';
-import Checkbox from './components/checkbox';
-import { getCheckboxes } from '.';
+import { render } from '@testing-library/react';
+import Home from '.';
 
 describe('Home', () => {
-  it('should return checkbox list', () => {
+  it('should render correctly', () => {
     const ingredients = [
       {
         name: 'cauliflower',
@@ -15,11 +15,6 @@ describe('Home', () => {
         name: 'onion',
       },
     ];
-    const expectedResult = [
-      <Checkbox id="0" name="cauliflower" />,
-      <Checkbox id="1" name="capsicum" />,
-      <Checkbox id="2" name="onion" />,
-    ];
-    expect(getCheckboxes(ingredients)).toEqual(expectedResult);
+    render(<Home ingredients={ingredients} />);
   });
 });
