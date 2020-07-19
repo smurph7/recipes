@@ -85,25 +85,27 @@ it('should return a list of cards', () => {
   expect(wrapper).toHaveLength(2);
 });
 
-it('should update checked ingredients if it is not already in the list', () => {
+it('should add checked ingredients if it is not already in the list', () => {
   const ingredient = 'carrot';
   const wrapper = shallow(<Home />);
   const instance = wrapper.instance();
   jest.spyOn(instance, 'setState');
-  instance.addCheckedIngredients(ingredient);
+  instance.updateCheckedIngredients(ingredient);
   expect(instance.setState).toHaveBeenCalledWith({
     checkedIngredients: [ingredient],
   });
 });
 
-it('should not update checked ingredients if it is already in the list', () => {
-  const ingredient = 'carrot';
+it('should remove checked ingredients if it is already in the list', () => {
+  const ingredients = ['carrot', 'cheese', 'corn'];
   const wrapper = shallow(<Home />);
   const instance = wrapper.instance();
-  instance.setState({ checkedIngredients: [ingredient] });
+  instance.setState({ checkedIngredients: ingredients });
   jest.spyOn(instance, 'setState');
-  instance.addCheckedIngredients(ingredient);
-  expect(instance.setState).not.toHaveBeenCalled();
+  instance.updateCheckedIngredients('corn');
+  expect(instance.setState).toHaveBeenCalledWith({
+    checkedIngredients: ['carrot', 'cheese'],
+  });
 });
 
 it('should update recipes', () => {
