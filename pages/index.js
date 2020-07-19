@@ -47,7 +47,7 @@ class Home extends React.Component {
       .then(async (result) => {
         await this.setState({ recipes: result, isLoading: false });
       })
-      .catch(() => {});
+      .catch(async () => { await this.setState({ recipes: [], isLoading: false })});
   };
 
   updateCheckedIngredients = (ingredient) => {
