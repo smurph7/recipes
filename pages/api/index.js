@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiKey } from './apikey';
+const apiKey = process.env.API_KEY;
 
 const maxNumberToReturn = '10';
 
