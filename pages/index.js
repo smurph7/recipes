@@ -1,12 +1,25 @@
 import React from 'react';
 import Head from 'next/head';
 import Card from '../components/card';
-import CheckboxList from '../components/checkbox';
+import Checkbox from '../components/checkbox';
 import Recipe from '../components/recipe';
 import styles from './index.module.sass';
 import { getIngredientsList, getRecipeDetails } from './api';
 import { CancelOutlined } from '@material-ui/icons';
 import { subTitle, recipeError } from '../constants';
+
+export const CheckboxList = ({ ingredients, onClick }) => {
+  return ingredients.map((ingredient, index) => {
+    return (
+      <Checkbox
+        name={ingredient.name}
+        id={index.toString()}
+        key={index}
+        onClick={() => onClick(ingredient.name)}
+      />
+    );
+  });
+};
 
 export const CardList = ({ recipes, onClick }) => {
   return recipes.map((item) => {
@@ -55,6 +68,12 @@ class Home extends React.Component {
       .catch(() => {});
   };
 
+  updateCheckedIngredients = (ingredient) => {
+    const newList = this.state.checkedIngredients;
+    newList.push({ name: ingredient });
+    this.setState({ checkedIngredients: newList });
+  };
+
   displayRecipe = (recipe) => {
     this.setState({ isRecipeVisible: true, recipe });
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -79,7 +98,10 @@ class Home extends React.Component {
               <div className={styles.checkboxListTitle}>
                 <p>Your Ingredients</p>
               </div>
-              <CheckboxList ingredients={ingredients} />
+              <CheckboxList
+                ingredients={ingredients}
+                onClick={this.updateCheckedIngredients}
+              />
             </div>
           </div>
           <div className={styles.recipeContainer}>
