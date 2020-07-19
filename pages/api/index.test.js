@@ -1,7 +1,7 @@
 import * as api from '.';
 
 it('should map ingredients to string for api query', () => {
-  const ingredients = [{ name: 'cheese' }, { name: 'corn' }, { name: 'bread' }];
+  const ingredients = ['cheese', 'corn', 'bread'];
   const expectedResponse = 'cheese,+corn,+bread';
   expect(api.mapIngredientsToString(ingredients)).toEqual(expectedResponse);
 });

@@ -69,15 +69,17 @@ class Home extends React.Component {
       .catch(() => {});
   };
 
-  updateCheckedIngredients = (ingredient) => {
+  addCheckedIngredients = (ingredient) => {
     const newList = this.state.checkedIngredients;
-    newList.push({ name: ingredient });
-    this.setState({ checkedIngredients: newList });
+    if (!newList.includes(ingredient)) {
+      newList.push(ingredient);
+      this.setState({ checkedIngredients: newList });
+    }
   };
 
   updateRecipes = () => {
     this.getRecipes(this.state.checkedIngredients);
-  }
+  };
 
   displayRecipe = (recipe) => {
     this.setState({ isRecipeVisible: true, recipe });
@@ -107,7 +109,9 @@ class Home extends React.Component {
                 ingredients={ingredients}
                 onClick={this.addCheckedIngredients}
               />
-              <Button variant="outlined" onClick={this.updateRecipes}>Update Recipes</Button>
+              <Button variant="outlined" onClick={this.updateRecipes}>
+                Update Recipes
+              </Button>
             </div>
           </div>
           <div className={styles.recipeContainer}>

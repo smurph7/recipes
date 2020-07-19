@@ -31,7 +31,7 @@ export const getRecipes = async (ingredients) => {
 
 export const mapIngredientsToString = (ingredients) => {
   if (ingredients) {
-    const list = ingredients.map((item) => item.name);
+    const list = ingredients.map((item) => item);
     return list.join(',+');
   }
   return '';

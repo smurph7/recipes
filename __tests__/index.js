@@ -85,24 +85,34 @@ it('should return a list of cards', () => {
   expect(wrapper).toHaveLength(2);
 });
 
-it('should update checked ingredients', () => {
+it('should update checked ingredients if it is not already in the list', () => {
   const ingredient = 'carrot';
   const wrapper = shallow(<Home />);
   const instance = wrapper.instance();
   jest.spyOn(instance, 'setState');
   instance.addCheckedIngredients(ingredient);
   expect(instance.setState).toHaveBeenCalledWith({
-    checkedIngredients: [{ name: ingredient }],
+    checkedIngredients: [ingredient],
   });
 });
 
+it('should not update checked ingredients if it is already in the list', () => {
+  const ingredient = 'carrot';
+  const wrapper = shallow(<Home />);
+  const instance = wrapper.instance();
+  instance.setState({ checkedIngredients: [ingredient] });
+  jest.spyOn(instance, 'setState');
+  instance.addCheckedIngredients(ingredient);
+  expect(instance.setState).not.toHaveBeenCalled();
+});
+
 it('should update recipes', () => {
-  const ingredients = [{ name: 'carrot' }, { name: 'cheese' }];
+  const ingredients = ['carrot', 'cheese'];
   const wrapper = shallow(<Home />);
   const instance = wrapper.instance();
   instance.setState({ checkedIngredients: ingredients });
   jest.spyOn(instance, 'getRecipes').mockImplementationOnce(() => {});
-  instance.updateRecipes(ingredients);
+  instance.updateRecipes();
   expect(instance.getRecipes).toHaveBeenCalledWith(ingredients);
 });
 
