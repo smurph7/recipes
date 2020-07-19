@@ -31,7 +31,10 @@ export const CardList = ({ recipes, onClick }) => {
 class Home extends React.Component {
   state = { isRecipeVisible: false, recipe: {} };
 
-  displayRecipe = (recipe) => this.setState({ isRecipeVisible: true, recipe });
+  displayRecipe = (recipe) => {
+    this.setState({ isRecipeVisible: true, recipe });
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
   hideRecipe = () => this.setState({ isRecipeVisible: false, recipe: {} });
 
   render() {
