@@ -1,18 +1,6 @@
 import styles from './index.module.sass';
-const recipe = require('../../mockRecipe.json')[0];
 import { capitaliseFirstLetter } from '../../utils';
 import { Person, Timer } from '@material-ui/icons';
-
-//only pass in this data
-//extendedIngredients
-//analyzedInstructions: [{
-//steps:[{step: 'text'}]
-//}]
-//image
-//title
-//servings
-//readyInMinutes
-
 
 export const IngredientsList = ({ ingredients }) => {
   const listItem = ingredients.map((item, key) => (
@@ -34,7 +22,7 @@ export const StepList = ({ steps }) => {
   return <ol>{list}</ol>;
 };
 
-const Recipe = () => {
+const Recipe = ({ recipe }) => {
   const ingredients = recipe.extendedIngredients;
   const steps = recipe.analyzedInstructions.map((item) => {
     return item.steps.map((steps) => {

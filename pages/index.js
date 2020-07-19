@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import CardList from '../components/card';
+import Card from '../components/card';
 import CheckboxList from '../components/checkbox';
 import Recipe from '../components/recipe';
 import styles from './index.module.sass';
@@ -10,19 +10,43 @@ import { subTitle, recipeError } from '../constants';
 
 export const getStaticProps = async () => {
   const ingredients = await getIngredientsList();
-  const recipes = await getRecipeDetails();
+  const recipes = [
+    {
+      image: 'https://spoonacular.com/recipeImages/592479-312x231.jpg',
+      title: 'Kale and Quinoa Salad with Black Beans',
+      id: '2',
+      extendedIngredients: [{ original: 'carrots' }],
+      analyzedInstructions: [{ steps: [{ step: 'do something' }] }],
+      readyInMinutes: '5',
+      servings: '4',
+    },
+  ]; //await getRecipeDetails();
   return { props: { ingredients, recipes } };
 };
 
-class Home extends React.Component {
-  state = { isRecipeVisible: false };
+export const CardList = ({ recipes, onClick }) => {
+  return recipes.map((item) => {
+    return (
+      <Card
+        key={item.id}
+        props={{
+          ...item,
+          onClick: () => onClick(item),
+        }}
+      />
+    );
+  });
+};
 
-  displayRecipe = () => this.setState({ isRecipeVisible: true });
-  hideRecipe = () => this.setState({ isRecipeVisible: false });
+class Home extends React.Component {
+  state = { isRecipeVisible: false, recipe: {} };
+
+  displayRecipe = (recipe) => this.setState({ isRecipeVisible: true, recipe });
+  hideRecipe = () => this.setState({ isRecipeVisible: false, recipe: {} });
 
   render() {
     const { ingredients, recipes } = this.props;
-    const { isRecipeVisible } = this.state;
+    const { isRecipeVisible, recipe } = this.state;
 
     return (
       <div>
@@ -53,7 +77,7 @@ class Home extends React.Component {
                       onClick={this.hideRecipe}
                     />
                   </div>
-                  <Recipe />
+                  <Recipe recipe={recipe} />
                 </div>
               </div>
             )}
@@ -63,10 +87,7 @@ class Home extends React.Component {
                   <p>{recipeError}</p>
                 </div>
               )}
-              <CardList
-                recipes={recipes}
-                onClick={() => this.displayRecipe()}
-              />
+              <CardList recipes={recipes} onClick={this.displayRecipe} />
             </div>
           </div>
         </div>

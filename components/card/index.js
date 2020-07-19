@@ -1,6 +1,6 @@
 import styles from './index.module.sass';
 
-export const Card = ({ props }) => {
+const Card = ({ props }) => {
   const { image, title, onClick } = props;
   return (
     <div onClick={onClick} className={styles.cardContainer}>
@@ -14,18 +14,4 @@ export const Card = ({ props }) => {
   );
 };
 
-const CardList = ({ recipes, onClick }) => {
-  return recipes.map((item) => {
-    return (
-      <Card
-        key={item.id}
-        props={{
-          ...item,
-          onClick
-        }}
-      />
-    );
-  });
-};
-
-export default CardList;
+export default Card;
