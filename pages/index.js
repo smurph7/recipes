@@ -4,7 +4,7 @@ import CardList from '../components/card';
 import CheckboxList from '../components/checkbox';
 import Recipe from '../components/recipe';
 import styles from './index.module.sass';
-import { getIngredientsList, getRecipeDetails } from './api/api';
+import { getIngredientsList, getRecipeDetails } from './api';
 import { CancelOutlined } from '@material-ui/icons';
 import { subTitle, recipeError } from '../constants';
 
