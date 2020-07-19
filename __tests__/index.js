@@ -2,18 +2,40 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { render } from '@testing-library/react';
 import Home, { CardList, CheckboxList } from '../pages';
+import * as api from '../pages/api';
 
 const spyScrollTo = jest.fn();
 Object.defineProperty(global.window, 'scrollTo', { value: spyScrollTo });
+const result = [];
+beforeEach(() => {
+  jest.spyOn(api, 'getRecipeDetails').mockResolvedValue(result);
+  jest.spyOn(api, 'getIngredientsList').mockResolvedValue(result);
+});
 
 it('should get ingredients and recipes on componentDidMount', () => {
   const wrapper = shallow(<Home />);
   const instance = wrapper.instance();
-  jest.spyOn(instance, 'getIngredients').mockImplementation(() => {});
-  jest.spyOn(instance, 'getRecipes').mockImplementation(() => {});
+  jest.spyOn(instance, 'getIngredients').mockImplementationOnce(() => {});
+  jest.spyOn(instance, 'getRecipes').mockImplementationOnce(() => {});
   instance.componentDidMount();
   expect(instance.getIngredients).toHaveBeenCalled();
   expect(instance.getRecipes).toHaveBeenCalled();
+});
+
+it('should set ingredients with result', async () => {
+  const wrapper = shallow(<Home />);
+  const instance = wrapper.instance();
+  jest.spyOn(instance, 'setState');
+  await instance.getIngredients();
+  expect(instance.setState).toHaveBeenCalledWith({ ingredientsList: result });
+});
+
+it('should set recipes with result', async () => {
+  const wrapper = shallow(<Home />);
+  const instance = wrapper.instance();
+  jest.spyOn(instance, 'setState');
+  await instance.getRecipes();
+  expect(instance.setState).toHaveBeenCalledWith({ recipes: result });
 });
 
 it('should show recipe', () => {
@@ -68,12 +90,21 @@ it('should update checked ingredients', () => {
   const wrapper = shallow(<Home />);
   const instance = wrapper.instance();
   jest.spyOn(instance, 'setState');
-  instance.updateCheckedIngredients(ingredient);
+  instance.addCheckedIngredients(ingredient);
   expect(instance.setState).toHaveBeenCalledWith({
     checkedIngredients: [{ name: ingredient }],
   });
 });
 
+it('should update recipes', () => {
+  const ingredients = [{ name: 'carrot' }, { name: 'cheese' }];
+  const wrapper = shallow(<Home />);
+  const instance = wrapper.instance();
+  instance.setState({ checkedIngredients: ingredients });
+  jest.spyOn(instance, 'getRecipes').mockImplementationOnce(() => {});
+  instance.updateRecipes(ingredients);
+  expect(instance.getRecipes).toHaveBeenCalledWith(ingredients);
+});
 
 it('should return a list of cards', () => {
   const recipes = [
@@ -104,6 +135,8 @@ it('should return a list of checkboxes', () => {
       name: 'onion',
     },
   ];
-  const wrapper = shallow(<CheckboxList ingredients={ingredients} onClick={jest.fn()}/>);
+  const wrapper = shallow(
+    <CheckboxList ingredients={ingredients} onClick={jest.fn()} />
+  );
   expect(wrapper).toHaveLength(3);
 });

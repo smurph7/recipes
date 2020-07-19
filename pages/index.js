@@ -6,6 +6,7 @@ import Recipe from '../components/recipe';
 import styles from './index.module.sass';
 import { getIngredientsList, getRecipeDetails } from './api';
 import { CancelOutlined } from '@material-ui/icons';
+import Button from '@material-ui/core/Button';
 import { subTitle, recipeError } from '../constants';
 
 export const CheckboxList = ({ ingredients, onClick }) => {
@@ -74,6 +75,10 @@ class Home extends React.Component {
     this.setState({ checkedIngredients: newList });
   };
 
+  updateRecipes = () => {
+    this.getRecipes(this.state.checkedIngredients);
+  }
+
   displayRecipe = (recipe) => {
     this.setState({ isRecipeVisible: true, recipe });
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -100,8 +105,9 @@ class Home extends React.Component {
               </div>
               <CheckboxList
                 ingredients={ingredients}
-                onClick={this.updateCheckedIngredients}
+                onClick={this.addCheckedIngredients}
               />
+              <Button variant="outlined" onClick={this.updateRecipes}>Update Recipes</Button>
             </div>
           </div>
           <div className={styles.recipeContainer}>
