@@ -40,24 +40,27 @@ export const mapIngredientsToString = (ingredients) => {
 export const getRecipeDetails = async (ingredientsList) => {
   let ingredients = mapIngredientsToString(ingredientsList);
   const { results } = await getRecipes(ingredients);
-  return results.map((item) => {
-    const {
-      id,
-      image,
-      title,
-      extendedIngredients,
-      analyzedInstructions,
-      readyInMinutes,
-      servings,
-    } = item;
-    return {
-      id,
-      image,
-      title,
-      extendedIngredients,
-      analyzedInstructions,
-      readyInMinutes,
-      servings,
-    };
-  });
+  if (results) {
+    return results.map((item) => {
+      const {
+        id,
+        image,
+        title,
+        extendedIngredients,
+        analyzedInstructions,
+        readyInMinutes,
+        servings,
+      } = item;
+      return {
+        id,
+        image,
+        title,
+        extendedIngredients,
+        analyzedInstructions,
+        readyInMinutes,
+        servings,
+      };
+    });
+  }
+  return [];
 };

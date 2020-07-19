@@ -7,7 +7,7 @@ export const Card = ({ props }) => {
       <div className={styles.card}>
         <img className={styles.cardImage} src={image} alt={title} />
         <div className={styles.cardHeading}>
-          <p>{title}</p>
+          <p className={styles.title}>{title}</p>
         </div>
       </div>
     </div>
