@@ -9,6 +9,12 @@ import { CancelOutlined } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { subTitle, recipeError } from '../constants';
 
+export const getStaticProps = async () => {
+  const ingredients = await getIngredientsList();
+  const recipes = await getRecipeDetails();
+  return { props: { ingredients, recipes } };
+};
+
 const Error = () => (
   <div className={styles.text}>
     <p>{recipeError}</p>
@@ -20,26 +26,12 @@ class Home extends React.Component {
     super(props);
     this.state = {
       isLoading: false,
-      ingredientsList: [],
-      recipes: [],
+      recipes: props.recipes,
       isRecipeVisible: false,
       recipe: {},
       checkedIngredients: [],
     };
   }
-
-  componentDidMount() {
-    this.getIngredients();
-    this.getRecipes();
-  }
-
-  getIngredients = async () => {
-    await getIngredientsList()
-      .then((result) => {
-        this.setState({ ingredientsList: result });
-      })
-      .catch(() => {});
-  };
 
   getRecipes = async (ingredients) => {
     this.setState({ isLoading: true });
@@ -47,7 +39,9 @@ class Home extends React.Component {
       .then(async (result) => {
         await this.setState({ recipes: result, isLoading: false });
       })
-      .catch(async () => { await this.setState({ recipes: [], isLoading: false })});
+      .catch(async () => {
+        await this.setState({ recipes: [], isLoading: false });
+      });
   };
 
   updateCheckedIngredients = (ingredient) => {
@@ -75,7 +69,7 @@ class Home extends React.Component {
   hideRecipe = () => this.setState({ isRecipeVisible: false, recipe: {} });
 
   render() {
-    const ingredients = this.state.ingredientsList;
+    const { ingredients } = this.props;
     const recipes = this.state.recipes;
     const { isRecipeVisible, recipe, isLoading } = this.state;
 
