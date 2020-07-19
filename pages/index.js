@@ -10,17 +10,7 @@ import { subTitle, recipeError } from '../constants';
 
 export const getStaticProps = async () => {
   const ingredients = await getIngredientsList();
-  const recipes = [
-    {
-      image: 'https://spoonacular.com/recipeImages/592479-312x231.jpg',
-      title: 'Kale and Quinoa Salad with Black Beans',
-      id: '2',
-      extendedIngredients: [{ original: 'carrots' }],
-      analyzedInstructions: [{ steps: [{ step: 'do something' }] }],
-      readyInMinutes: '5',
-      servings: '4',
-    },
-  ]; //await getRecipeDetails();
+  const recipes = await getRecipeDetails();
   return { props: { ingredients, recipes } };
 };
 
