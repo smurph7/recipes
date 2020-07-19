@@ -1,4 +1,5 @@
 import axios from 'axios';
+const apiKey = process.env.apiKey;
 
 const maxNumberToReturn = '10';
 
@@ -18,7 +19,7 @@ export const getIngredientsList = async () => {
 export const getRecipes = async (ingredients) => {
   return await axios
     .get(
-      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.apiKey}&includeIngredients=${ingredients}&instructionsRequired=true&addRecipeInformation=true&fillIngredients=true&number=${maxNumberToReturn}`
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&includeIngredients=${ingredients}&instructionsRequired=true&addRecipeInformation=true&fillIngredients=true&number=${maxNumberToReturn}`
     )
     .then((res) => {
       return res.data;
