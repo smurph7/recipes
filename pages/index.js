@@ -86,7 +86,7 @@ class Home extends React.Component {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className={styles.container}>
-          <div>
+          <div className={styles.ingredientsContainer}>
             <div className={styles.checkboxContainer}>
               <div className={styles.checkboxListTitle}>
                 <p>Your Ingredients</p>
@@ -127,9 +127,7 @@ class Home extends React.Component {
             )}
           </div>
         </div>
-        <div className={styles.footer}>
-          <p>Powered by me</p>
-        </div>
+        <div className={styles.footer}></div>
       </div>
     );
   }

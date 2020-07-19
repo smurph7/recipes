@@ -1,21 +1,26 @@
-# Next.js + Jest
+# Recipe Suggestions
+This webpage suggests some recipes to try based on your selected ingredients.
+Select/deselect ingredients to get new suggestions.
+Open a recipe card to view the full recipe.
 
-This example shows how to configure Jest to work with Next.js.
-
-This includes Next.js' built-in support for Global CSS, CSS Modules, and TypeScript!
-
-## How to Use
-
-Quickly get started using [Create Next App](https://github.com/vercel/next.js/tree/canary/packages/create-next-app#readme)!
-
-In your terminal, run the following command:
-
+## Get started
+Clone the repo and install dependencies
 ```bash
-npx create-next-app --example with-jest
+git clone https://github.com/smurph7/recipes.git
+
+yarn
 ```
 
-## Run Jest Tests
+## Run locally
+You will need an API key for spoonacular. You can sign up for one at https://spoonacular.com/food-api (it's free). 
+
+Use it to replace the one in `pages/api/index.js`.
+```bash
+yarn dev
+```
+
+## Run Tests
 
 ```bash
-npm test
+yarn test
 ```
