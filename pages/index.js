@@ -8,12 +8,6 @@ import { getIngredientsList, getRecipeDetails } from './api';
 import { CancelOutlined } from '@material-ui/icons';
 import { subTitle, recipeError } from '../constants';
 
-export const getStaticProps = async () => {
-  const ingredients = await getIngredientsList();
-  const recipes = await getRecipeDetails();
-  return { props: { ingredients, recipes } };
-};
-
 export const CardList = ({ recipes, onClick }) => {
   return recipes.map((item) => {
     return (
@@ -29,16 +23,48 @@ export const CardList = ({ recipes, onClick }) => {
 };
 
 class Home extends React.Component {
-  state = { isRecipeVisible: false, recipe: {} };
+  constructor(props) {
+    super(props);
+    this.state = {
+      ingredientsList: [],
+      recipes: [],
+      isRecipeVisible: false,
+      recipe: {},
+      checkedIngredients: [],
+    };
+  }
+
+  componentDidMount() {
+    this.getIngredients();
+    this.getRecipes();
+  }
+
+  getIngredients = async () => {
+    await getIngredientsList()
+      .then((result) => {
+        this.setState({ ingredientsList: result });
+      })
+      .catch(() => {});
+  };
+
+  getRecipes = async (ingredients) => {
+    await getRecipeDetails(ingredients)
+      .then((result) => {
+        this.setState({ recipes: result });
+      })
+      .catch(() => {});
+  };
 
   displayRecipe = (recipe) => {
     this.setState({ isRecipeVisible: true, recipe });
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
+
   hideRecipe = () => this.setState({ isRecipeVisible: false, recipe: {} });
 
   render() {
-    const { ingredients, recipes } = this.props;
+    const ingredients = this.state.ingredientsList;
+    const recipes = this.state.recipes;
     const { isRecipeVisible, recipe } = this.state;
 
     return (

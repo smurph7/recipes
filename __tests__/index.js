@@ -43,12 +43,21 @@ const recipes = [
 
 const props = { ingredients, recipes };
 
-it('should render correctly', () => {
-  render(<Home {...props} />);
+const spyScrollTo = jest.fn();
+Object.defineProperty(global.window, 'scrollTo', { value: spyScrollTo });
+
+it('should get ingredients and recipes on componentDidMount', () => {
+  const wrapper = shallow(<Home />);
+  const instance = wrapper.instance();
+  jest.spyOn(instance, 'getIngredients').mockImplementation(() => {});
+  jest.spyOn(instance, 'getRecipes').mockImplementation(() => {});
+  instance.componentDidMount();
+  expect(instance.getIngredients).toHaveBeenCalled();
+  expect(instance.getRecipes).toHaveBeenCalled();
 });
 
 it('should show recipe', () => {
-  const wrapper = shallow(<Home {...props} />);
+  const wrapper = shallow(<Home />);
   const instance = wrapper.instance();
   const recipe = { title: 'pie' };
   jest.spyOn(instance, 'setState');
