@@ -28,3 +28,11 @@ export const getRandomRecipes = async () => {
       return [];
     });
 };
+
+export const getRecipeDetails = async () => {
+  const { recipes } = await getRandomRecipes();
+  return recipes.map((item) => {
+    const { id, image, title } = item;
+    return { id, image, title };
+  });
+};
