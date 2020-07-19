@@ -1,0 +1,2 @@
+export const subTitle = `Here are some recipes you might like to try!\nSelect from the ingredients you have on hand to find recipes tailored to you.`
+export const recipeError = `Oops! We couldn't find any recipes.\nTry refreshing the page or choosing some different ingredients.`
