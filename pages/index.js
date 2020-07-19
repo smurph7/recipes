@@ -1,44 +1,25 @@
 import React from 'react';
 import Head from 'next/head';
-import Card from '../components/card';
-import Checkbox from '../components/checkbox';
+import CardList from '../components/card';
+import CheckboxList from '../components/checkbox';
 import Recipe from '../components/recipe';
 import styles from './index.module.sass';
 import { getIngredientsList, getRecipeDetails } from './api';
 import { CancelOutlined } from '@material-ui/icons';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { subTitle, recipeError } from '../constants';
 
-export const CheckboxList = ({ ingredients, onClick }) => {
-  return ingredients.map((ingredient, index) => {
-    return (
-      <Checkbox
-        name={ingredient.name}
-        id={index.toString()}
-        key={index}
-        onClick={() => onClick(ingredient.name)}
-      />
-    );
-  });
-};
-
-export const CardList = ({ recipes, onClick }) => {
-  return recipes.map((item) => {
-    return (
-      <Card
-        key={item.id}
-        props={{
-          ...item,
-          onClick: () => onClick(item),
-        }}
-      />
-    );
-  });
-};
+const Error = () => (
+  <div className={styles.text}>
+    <p>{recipeError}</p>
+  </div>
+);
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       ingredientsList: [],
       recipes: [],
       isRecipeVisible: false,
@@ -61,9 +42,10 @@ class Home extends React.Component {
   };
 
   getRecipes = async (ingredients) => {
+    this.setState({ isLoading: true });
     await getRecipeDetails(ingredients)
-      .then((result) => {
-        this.setState({ recipes: result });
+      .then(async (result) => {
+        await this.setState({ recipes: result, isLoading: false });
       })
       .catch(() => {});
   };
@@ -95,7 +77,7 @@ class Home extends React.Component {
   render() {
     const ingredients = this.state.ingredientsList;
     const recipes = this.state.recipes;
-    const { isRecipeVisible, recipe } = this.state;
+    const { isRecipeVisible, recipe, isLoading } = this.state;
 
     return (
       <div>
@@ -104,7 +86,7 @@ class Home extends React.Component {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className={styles.container}>
-          <div className={styles.ingredientsContainer}>
+          <div>
             <div className={styles.checkboxContainer}>
               <div className={styles.checkboxListTitle}>
                 <p>Your Ingredients</p>
@@ -133,14 +115,16 @@ class Home extends React.Component {
                 </div>
               </div>
             )}
-            <div className={styles.cardContainer}>
-              {recipes.length === 0 && (
-                <div data-testid="error" className={styles.text}>
-                  <p>{recipeError}</p>
-                </div>
-              )}
-              <CardList recipes={recipes} onClick={this.displayRecipe} />
-            </div>
+            {isLoading ? (
+              <div className={styles.cardContainer}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <div className={styles.cardContainer}>
+                {recipes.length === 0 && <Error />}
+                <CardList recipes={recipes} onClick={this.displayRecipe} />
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.footer}>

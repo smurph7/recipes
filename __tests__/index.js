@@ -1,15 +1,20 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { render } from '@testing-library/react';
-import Home, { CardList, CheckboxList } from '../pages';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Home from '../pages';
 import * as api from '../pages/api';
 
 const spyScrollTo = jest.fn();
 Object.defineProperty(global.window, 'scrollTo', { value: spyScrollTo });
 const result = [];
+
 beforeEach(() => {
   jest.spyOn(api, 'getRecipeDetails').mockResolvedValue(result);
   jest.spyOn(api, 'getIngredientsList').mockResolvedValue(result);
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
 it('should get ingredients and recipes on componentDidMount', () => {
@@ -35,7 +40,10 @@ it('should set recipes with result', async () => {
   const instance = wrapper.instance();
   jest.spyOn(instance, 'setState');
   await instance.getRecipes();
-  expect(instance.setState).toHaveBeenCalledWith({ recipes: result });
+  expect(instance.setState).toHaveBeenCalledWith({
+    recipes: result,
+    isLoading: false,
+  });
 });
 
 it('should show recipe', () => {
@@ -63,26 +71,17 @@ it('should hide recipe', () => {
 });
 
 it('should show error message if recipes is empty', () => {
-  const { getByTestId } = render(<Home />);
-  const error = getByTestId('error');
-  expect(error).toBeInTheDocument();
+  const wrapper = shallow(<Home />);
+  const instance = wrapper.instance();
+  instance.setState({ recipes: [], isLoading: false });
+  expect(wrapper.find('Error')).toHaveLength(1);
 });
 
-it('should return a list of cards', () => {
-  const recipes = [
-    {
-      image: 'https://spoonacular.com/recipeImages/474463-312x231.jpg',
-      title: 'Southwestern Chicken Taco Pie',
-      id: '1',
-    },
-    {
-      image: 'https://spoonacular.com/recipeImages/592479-312x231.jpg',
-      title: 'Kale and Quinoa Salad with Black Beans',
-      id: '2',
-    },
-  ];
-  const wrapper = shallow(<CardList recipes={recipes} />);
-  expect(wrapper).toHaveLength(2);
+it('should show spinner if loading is true', () => {
+  const wrapper = shallow(<Home />);
+  const instance = wrapper.instance();
+  instance.setState({ recipes: [], isLoading: true });
+  expect(wrapper.find(CircularProgress)).toHaveLength(1);
 });
 
 it('should add checked ingredients if it is not already in the list', () => {
@@ -116,39 +115,4 @@ it('should update recipes', () => {
   jest.spyOn(instance, 'getRecipes').mockImplementationOnce(() => {});
   instance.updateRecipes();
   expect(instance.getRecipes).toHaveBeenCalledWith(ingredients);
-});
-
-it('should return a list of cards', () => {
-  const recipes = [
-    {
-      image: 'https://spoonacular.com/recipeImages/474463-312x231.jpg',
-      title: 'Southwestern Chicken Taco Pie',
-      id: '1',
-    },
-    {
-      image: 'https://spoonacular.com/recipeImages/592479-312x231.jpg',
-      title: 'Kale and Quinoa Salad with Black Beans',
-      id: '2',
-    },
-  ];
-  const wrapper = shallow(<CardList recipes={recipes} />);
-  expect(wrapper).toHaveLength(2);
-});
-
-it('should return a list of checkboxes', () => {
-  const ingredients = [
-    {
-      name: 'cauliflower',
-    },
-    {
-      name: 'capsicum',
-    },
-    {
-      name: 'onion',
-    },
-  ];
-  const wrapper = shallow(
-    <CheckboxList ingredients={ingredients} onClick={jest.fn()} />
-  );
-  expect(wrapper).toHaveLength(3);
 });

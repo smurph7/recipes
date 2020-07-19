@@ -20,4 +20,17 @@ export const Checkbox = ({ name, id, onClick }) => {
   );
 };
 
-export default Checkbox;
+const CheckboxList = ({ ingredients, onClick }) => {
+  return ingredients.map((ingredient, index) => {
+    return (
+      <Checkbox
+        name={ingredient.name}
+        id={index.toString()}
+        key={index}
+        onClick={() => onClick(ingredient.name)}
+      />
+    );
+  });
+};
+
+export default CheckboxList;
