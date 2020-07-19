@@ -22,13 +22,17 @@ export const StepList = ({ steps }) => {
   return <ol>{list}</ol>;
 };
 
-const Recipe = ({ recipe }) => {
-  const ingredients = recipe.extendedIngredients;
-  const steps = recipe.analyzedInstructions.map((item) => {
+export const getInstructions = (instructions) => {
+  return instructions.map((item) => {
     return item.steps.map((steps) => {
       return steps.step;
     });
   });
+};
+
+const Recipe = ({ recipe }) => {
+  const ingredients = recipe.extendedIngredients;
+  const steps = getInstructions(recipe.analyzedInstructions);
 
   return (
     <div className={styles.recipe}>
