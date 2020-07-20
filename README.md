@@ -3,6 +3,8 @@ This webpage suggests some recipes to try based on your selected ingredients.
 Select/deselect ingredients to get new suggestions.
 Open a recipe card to view the full recipe.
 
+The website is live here https://recipes.smurph7.vercel.app/
+
 The list of ingredients are retrieved from a mock API using GitHub and JSONPlaceholder accessible here https://github.com/smurph7/ingredients-list
 
 Recipes are retrieved from Spoonacular https://spoonacular.com/food-api
