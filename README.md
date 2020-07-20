@@ -8,7 +8,7 @@ The list of ingredients are retrieved from a mock API using GitHub and JSONPlace
 Recipes are retrieved from Spoonacular https://spoonacular.com/food-api
 
 ## Website
-You can view the webpage here https://recipes-murex.vercel.app/
+You can view the webpage here https://recipes.smurph7.vercel.app/
 
 ## Get started
 Clone the repo and install dependencies
