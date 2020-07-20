@@ -7,9 +7,6 @@ The list of ingredients are retrieved from a mock API using GitHub and JSONPlace
 
 Recipes are retrieved from Spoonacular https://spoonacular.com/food-api
 
-## Website
-You can view the webpage here https://recipes.smurph7.vercel.app/
-
 ## Get started
 Clone the repo and install dependencies
 ```bash
@@ -21,7 +18,7 @@ yarn
 ## Run locally
 You will need an API key for spoonacular. You can sign up for one at https://spoonacular.com/food-api (it's free). 
 
-Use it to replace the one in `pages/api/index.js` instead of `process.env.apiKey`
+Use it to replace the one in `pages/api/index.js` instead of `process.env.API_KEY`
 ```bash
 yarn dev
 ```
