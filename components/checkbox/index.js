@@ -8,7 +8,7 @@ export const Checkbox = ({ name, id, onClick }) => {
       <div className={styles.checkbox}>
         <input
           className={styles.square}
-          data-testid={id}
+          data-testid={`option${id}`}
           type="checkbox"
           name={`option${id}`}
           value={name}

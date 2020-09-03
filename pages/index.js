@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import CardList from '../components/card';
 import CheckboxList from '../components/checkbox';
@@ -16,115 +16,114 @@ export const getStaticProps = async () => {
 };
 
 const Error = () => (
-  <div className={styles.text}>
+  <div data-testid="error" className={styles.text}>
     <p>{recipeError}</p>
   </div>
 );
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-      recipes: props.recipes,
-      isRecipeVisible: false,
-      recipe: {},
-      checkedIngredients: [],
-    };
+export const updateIngredientList = (ingredient, checkedIngredients) => {
+  const newList = checkedIngredients;
+  if (!newList.includes(ingredient)) {
+    newList.push(ingredient);
+  } else {
+    const index = newList.indexOf(ingredient);
+    newList.splice(index, 1);
   }
+  return newList;
+};
 
-  getRecipes = async (ingredients) => {
-    this.setState({ isLoading: true });
-    await getRecipeDetails(ingredients)
-      .then(async (result) => {
-        await this.setState({ recipes: result, isLoading: false });
+const Home = ({ recipes, ingredients }) => {
+  const [isRecipeVisible, setRecipeVisible] = useState(false);
+  const [checkedIngredients, setCheckedIngredients] = useState([]);
+  const [recipeList, setRecipeList] = useState(recipes);
+  const [recipe, setRecipe] = useState({});
+  const [isLoading, setLoading] = useState(false);
+
+  const showRecipe = () => setRecipeVisible(true);
+  const hideRecipe = () => setRecipeVisible(false);
+
+  const updateCheckedIngredients = ingredient => {
+    const newList = updateIngredientList(ingredient, checkedIngredients);
+    setCheckedIngredients(newList);
+    hideRecipe();
+    updateRecipes();
+  };
+
+  const updateRecipes = () => {
+    getRecipes(checkedIngredients);
+  };
+
+  const getRecipes = ingredients => {
+    setLoading(true);
+    getRecipeDetails(ingredients)
+      .then(async result => {
+        setRecipeList(result);
+        setLoading(false);
       })
       .catch(async () => {
-        await this.setState({ recipes: [], isLoading: false });
+        setRecipeList([]);
+        setLoading(false);
       });
   };
 
-  updateCheckedIngredients = (ingredient) => {
-    const newList = this.state.checkedIngredients;
-    if (!newList.includes(ingredient)) {
-      newList.push(ingredient);
-    } else {
-      const index = newList.indexOf(ingredient);
-      newList.splice(index, 1);
-    }
-    this.setState({ checkedIngredients: newList });
-    this.hideRecipe();
-    this.updateRecipes();
-  };
-
-  updateRecipes = () => {
-    this.getRecipes(this.state.checkedIngredients);
-  };
-
-  displayRecipe = (recipe) => {
-    this.setState({ isRecipeVisible: true, recipe });
+  const displayRecipe = recipe => {
+    showRecipe();
+    setRecipe(recipe);
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  hideRecipe = () => this.setState({ isRecipeVisible: false, recipe: {} });
-
-  render() {
-    const { ingredients } = this.props;
-    const recipes = this.state.recipes;
-    const { isRecipeVisible, recipe, isLoading } = this.state;
-
-    return (
-      <div>
-        <Head>
-          <title>Recipes</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <div className={styles.container}>
-          <div className={styles.ingredientsContainer}>
-            <div className={styles.checkboxContainer}>
-              <div className={styles.checkboxListTitle}>
-                <p>Your Ingredients</p>
-              </div>
-              <CheckboxList
-                ingredients={ingredients}
-                onClick={this.updateCheckedIngredients}
-              />
+  return (
+    <div>
+      <Head>
+        <title>Recipes</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className={styles.container}>
+        <div className={styles.ingredientsContainer}>
+          <div className={styles.checkboxContainer}>
+            <div className={styles.checkboxListTitle}>
+              <p>Your Ingredients</p>
             </div>
-          </div>
-          <div className={styles.recipeContainer}>
-            <div className={styles.heading}>
-              <p className={styles.title}>Recipes</p>
-              <p className={styles.text}>{subTitle}</p>
-            </div>
-            {isRecipeVisible && (
-              <div className={styles.cardContainer}>
-                <div className={styles.recipeCard}>
-                  <div className={styles.close}>
-                    <CancelOutlined
-                      fontSize="large"
-                      onClick={this.hideRecipe}
-                    />
-                  </div>
-                  <Recipe recipe={recipe} />
-                </div>
-              </div>
-            )}
-            {isLoading ? (
-              <div className={styles.cardContainer}>
-                <CircularProgress />
-              </div>
-            ) : (
-              <div className={styles.cardContainer}>
-                {recipes.length === 0 && <Error />}
-                <CardList recipes={recipes} onClick={this.displayRecipe} />
-              </div>
-            )}
+            <CheckboxList
+              ingredients={ingredients}
+              onClick={updateCheckedIngredients}
+            />
           </div>
         </div>
-        <div className={styles.footer}></div>
+        <div className={styles.recipeContainer}>
+          <div className={styles.heading}>
+            <p className={styles.title}>Recipes</p>
+            <p className={styles.text}>{subTitle}</p>
+          </div>
+          {isRecipeVisible && (
+            <div className={styles.cardContainer}>
+              <div className={styles.recipeCard}>
+                <div className={styles.close}>
+                  <CancelOutlined
+                    data-testid="close"
+                    fontSize="large"
+                    onClick={hideRecipe}
+                  />
+                </div>
+                <Recipe recipe={recipe} />
+              </div>
+            </div>
+          )}
+          {isLoading ? (
+            <div className={styles.cardContainer}>
+              <CircularProgress data-testid="spinner" />
+            </div>
+          ) : (
+            <div className={styles.cardContainer}>
+              {recipeList.length === 0 && <Error />}
+              <CardList recipes={recipeList} onClick={displayRecipe} />
+            </div>
+          )}
+        </div>
       </div>
-    );
-  }
-}
+      <div className={styles.footer}></div>
+    </div>
+  );
+};
 
 export default Home;

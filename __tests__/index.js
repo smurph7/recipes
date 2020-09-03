@@ -1,46 +1,72 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Home, { getStaticProps } from '../pages';
+import { render, fireEvent, act, waitFor } from '@testing-library/react';
+import Home, { getStaticProps, updateIngredientList } from '../pages';
 import * as api from '../pages/api';
 
 const ingredients = [
   {
-    name: 'cauliflower',
+    name: 'cauliflower'
   },
   {
-    name: 'capsicum',
+    name: 'capsicum'
   },
   {
-    name: 'onion',
-  },
+    name: 'onion'
+  }
 ];
 
-const recipes = [
-  {
-    extendedIngredients: [
-      {
-        original: 'ingredient',
-      },
-    ],
-    id: 19983,
-    title: 'Pork & Green Salsa with Cheesy Hominy',
-    readyInMinutes: 90,
-    servings: 8,
-    image: 'https://spoonacular.com/recipeImages/19983-312x231.jpg',
-    analyzedInstructions: [
-      {
-        steps: [
-          {
-            number: 1,
-            step:
-              'Cook chiles in large skillet 5 min. or until toasted, stirring frequently.',
-          },
-        ],
-      },
-    ],
-  },
-];
+const title1 = 'Pork & Green Salsa with Cheesy Hominy';
+const title2 = 'Nama Chocolate';
+const step1 =
+  'Cook chiles in large skillet 5 min. or until toasted, stirring frequently.';
+const step2 = 'Cut the chocolate';
+
+const recipe1 = {
+  extendedIngredients: [
+    {
+      original: 'ingredient'
+    }
+  ],
+  id: 19983,
+  title: title1,
+  readyInMinutes: 90,
+  servings: 8,
+  image: 'https://spoonacular.com/recipeImages/19983-312x231.jpg',
+  analyzedInstructions: [
+    {
+      steps: [
+        {
+          number: 1,
+          step: step1
+        }
+      ]
+    }
+  ]
+};
+
+const recipe2 = {
+  extendedIngredients: [
+    {
+      original: 'ingredient'
+    }
+  ],
+  id: 19984,
+  title: title2,
+  readyInMinutes: 30,
+  servings: 36,
+  image: 'https://spoonacular.com/recipeImages/19983-312x231.jpg',
+  analyzedInstructions: [
+    {
+      steps: [
+        {
+          number: 1,
+          step: step2
+        }
+      ]
+    }
+  ]
+};
+const recipes = [recipe1, recipe2];
 
 const spyScrollTo = jest.fn();
 Object.defineProperty(global.window, 'scrollTo', { value: spyScrollTo });
@@ -54,6 +80,11 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
+const renderHome = props => {
+  const homeProps = { ingredients, recipes, ...props };
+  return render(<Home {...homeProps} />);
+};
+
 it('should get ingredients and recipes in static props', async () => {
   const props = await getStaticProps();
   expect(props).toEqual({ props: { ingredients, recipes } });
@@ -61,86 +92,69 @@ it('should get ingredients and recipes in static props', async () => {
   expect(api.getIngredientsList).toHaveBeenCalled();
 });
 
-const props = { ingredients, recipes };
+it('should show recipe on click card', () => {
+  const { getByText } = renderHome();
+  fireEvent.click(getByText(title1));
+  expect(getByText(step1)).toBeInTheDocument();
+});
 
-it('should set recipes with result', async () => {
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  jest.spyOn(instance, 'setState');
-  await instance.getRecipes();
-  expect(instance.setState).toHaveBeenCalledWith({
-    recipes,
-    isLoading: false,
+it('should hide recipe on click x', () => {
+  const { getByText, getByTestId, queryByText } = renderHome();
+  const title = getByText(title1);
+  fireEvent.click(title);
+  const close = getByTestId('close');
+  fireEvent.click(close);
+  expect(title).toBeInTheDocument();
+  expect(queryByText(step1)).not.toBeInTheDocument();
+});
+
+it('should display recipes on load page', () => {
+  const { getByText } = renderHome();
+  expect(getByText(title1)).toBeInTheDocument();
+  expect(getByText(title2)).toBeInTheDocument();
+});
+
+it('should show error message if recipes is empty', async () => {
+  const { getByTestId } = renderHome();
+  const option = getByTestId('option1');
+  await act(async () => {
+    jest.spyOn(api, 'getRecipeDetails').mockRejectedValueOnce([]);
+    fireEvent.click(option);
+  });
+  expect(getByTestId('error')).toBeInTheDocument();
+});
+
+it('should show spinner when loading recipes', async () => {
+  const { getByTestId } = renderHome();
+  const option = getByTestId('option1');
+  await act(async () => {
+    fireEvent.click(option);
+    await waitFor(() => {
+      expect(getByTestId('spinner')).toBeInTheDocument();
+    });
   });
 });
 
-it('should show recipe', () => {
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  const recipe = { title: 'pie' };
-  jest.spyOn(instance, 'setState');
-  instance.displayRecipe(recipe);
-  expect(instance.setState).toHaveBeenCalledWith({
-    isRecipeVisible: true,
-    recipe,
+it('should tick ingredients on click checkbox', async () => {
+  const { getByTestId } = renderHome();
+  const option = getByTestId('option1');
+  expect(option.checked).toBeFalsy();
+  await act(async () => {
+    fireEvent.click(option);
   });
+  expect(option.checked).toBeTruthy();
 });
 
-it('should hide recipe', () => {
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  const recipe = {};
-  jest.spyOn(instance, 'setState');
-  instance.hideRecipe();
-  expect(instance.setState).toHaveBeenCalledWith({
-    isRecipeVisible: false,
-    recipe,
-  });
+it('should add new checked ingredient to list if it is not already in the list', () => {
+  const ingredient = 'onion';
+  const checkedIngredients = [];
+  const list = updateIngredientList(ingredient, checkedIngredients);
+  expect(list).toContain(ingredient);
 });
 
-it('should show error message if recipes is empty', () => {
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  instance.setState({ recipes: [], isLoading: false });
-  expect(wrapper.find('Error')).toHaveLength(1);
-});
-
-it('should show spinner if loading is true', () => {
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  instance.setState({ recipes: [], isLoading: true });
-  expect(wrapper.find(CircularProgress)).toHaveLength(1);
-});
-
-it('should add checked ingredients if it is not already in the list', () => {
-  const ingredient = 'carrot';
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  jest.spyOn(instance, 'setState');
-  instance.updateCheckedIngredients(ingredient);
-  expect(instance.setState).toHaveBeenCalledWith({
-    checkedIngredients: [ingredient],
-  });
-});
-
-it('should remove checked ingredients if it is already in the list', () => {
-  const ingredients = ['carrot', 'cheese', 'corn'];
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  instance.setState({ checkedIngredients: ingredients });
-  jest.spyOn(instance, 'setState');
-  instance.updateCheckedIngredients('corn');
-  expect(instance.setState).toHaveBeenCalledWith({
-    checkedIngredients: ['carrot', 'cheese'],
-  });
-});
-
-it('should update recipes', () => {
-  const ingredients = ['carrot', 'cheese'];
-  const wrapper = shallow(<Home {...props} />);
-  const instance = wrapper.instance();
-  instance.setState({ checkedIngredients: ingredients });
-  jest.spyOn(instance, 'getRecipes').mockImplementationOnce(() => {});
-  instance.updateRecipes();
-  expect(instance.getRecipes).toHaveBeenCalledWith(ingredients);
+it('should remove unchecked ingredient from list if it is already in the list', () => {
+  const ingredient = 'onion';
+  const checkedIngredients = [ingredient];
+  const list = updateIngredientList(ingredient, checkedIngredients);
+  expect(list).not.toContain(ingredient);
 });

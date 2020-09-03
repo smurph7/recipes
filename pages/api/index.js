@@ -8,7 +8,7 @@ export const getIngredientsList = async () => {
     .get(
       `https://my-json-server.typicode.com/smurph7/ingredients-list/ingredients`
     )
-    .then((res) => {
+    .then(res => {
       return res.data;
     })
     .catch(() => {
@@ -16,12 +16,12 @@ export const getIngredientsList = async () => {
     });
 };
 
-export const getRecipes = async (ingredients) => {
+export const getRecipes = async ingredients => {
   return await axios
     .get(
       `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&includeIngredients=${ingredients}&instructionsRequired=true&addRecipeInformation=true&fillIngredients=true&number=${maxNumberToReturn}`
     )
-    .then((res) => {
+    .then(res => {
       return res.data;
     })
     .catch(() => {
@@ -29,19 +29,19 @@ export const getRecipes = async (ingredients) => {
     });
 };
 
-export const mapIngredientsToString = (ingredients) => {
+export const mapIngredientsToString = ingredients => {
   if (ingredients) {
-    const list = ingredients.map((item) => item);
+    const list = ingredients.map(item => item);
     return list.join(',+');
   }
   return '';
 };
 
-export const getRecipeDetails = async (ingredientsList) => {
+export const getRecipeDetails = async ingredientsList => {
   let ingredients = mapIngredientsToString(ingredientsList);
   const { results } = await getRecipes(ingredients);
   if (results) {
-    return results.map((item) => {
+    return results.map(item => {
       const {
         id,
         image,
@@ -49,7 +49,7 @@ export const getRecipeDetails = async (ingredientsList) => {
         extendedIngredients,
         analyzedInstructions,
         readyInMinutes,
-        servings,
+        servings
       } = item;
       return {
         id,
@@ -58,7 +58,7 @@ export const getRecipeDetails = async (ingredientsList) => {
         extendedIngredients,
         analyzedInstructions,
         readyInMinutes,
-        servings,
+        servings
       };
     });
   }

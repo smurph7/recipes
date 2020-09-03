@@ -9,7 +9,7 @@ it('should render the props passed in', () => {
 
   const { getByText, getByTestId } = render(<Checkbox name={name} id={id} />);
   const text = getByText(name);
-  const testId = getByTestId(id);
+  const testId = getByTestId(`option${id}`);
   expect(text).toBeInTheDocument();
   expect(testId).toBeInTheDocument();
 });
@@ -17,14 +17,14 @@ it('should render the props passed in', () => {
 it('should return a list of checkboxes', () => {
   const ingredients = [
     {
-      name: 'cauliflower',
+      name: 'cauliflower'
     },
     {
-      name: 'capsicum',
+      name: 'capsicum'
     },
     {
-      name: 'onion',
-    },
+      name: 'onion'
+    }
   ];
   const wrapper = shallow(
     <CheckboxList ingredients={ingredients} onClick={jest.fn()} />
