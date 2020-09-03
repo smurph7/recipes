@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, fireEvent, act, waitFor } from '@testing-library/react';
-import Home, { getStaticProps, updateIngredientList } from '../pages';
+import { render, fireEvent, act, waitFor, wait } from '@testing-library/react';
+import Home, { updateIngredientList, getServerSideProps } from '../pages';
 import * as api from '../pages/api';
 
 const ingredients = [
@@ -85,33 +85,37 @@ const renderHome = props => {
   return render(<Home {...homeProps} />);
 };
 
-it('should get ingredients and recipes in static props', async () => {
-  const props = await getStaticProps();
+it('should get ingredients and recipes in server side props', async () => {
+  const props = await getServerSideProps();
   expect(props).toEqual({ props: { ingredients, recipes } });
   expect(api.getRecipeDetails).toHaveBeenCalled();
   expect(api.getIngredientsList).toHaveBeenCalled();
 });
 
-it('should show recipe on click card', () => {
+it('should show recipe on click card', async () => {
   const { getByText } = renderHome();
   fireEvent.click(getByText(title1));
-  expect(getByText(step1)).toBeInTheDocument();
+  await waitFor(() => expect(getByText(step1)).toBeInTheDocument());
 });
 
-it('should hide recipe on click x', () => {
+it('should hide recipe on click x', async () => {
   const { getByText, getByTestId, queryByText } = renderHome();
   const title = getByText(title1);
   fireEvent.click(title);
   const close = getByTestId('close');
   fireEvent.click(close);
-  expect(title).toBeInTheDocument();
-  expect(queryByText(step1)).not.toBeInTheDocument();
+  await waitFor(() => {
+    expect(title).toBeInTheDocument();
+    expect(queryByText(step1)).not.toBeInTheDocument();
+  });
 });
 
-it('should display recipes on load page', () => {
+it('should display recipes on load page', async () => {
   const { getByText } = renderHome();
-  expect(getByText(title1)).toBeInTheDocument();
-  expect(getByText(title2)).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText(title1)).toBeInTheDocument();
+    expect(getByText(title2)).toBeInTheDocument();
+  });
 });
 
 it('should show error message if recipes is empty', async () => {

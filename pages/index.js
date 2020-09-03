@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { ReactQueryDevtools } from 'react-query-devtools';
 import Head from 'next/head';
 import CardList from '../components/card';
 import CheckboxList from '../components/checkbox';
@@ -9,7 +11,7 @@ import { CancelOutlined } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { subTitle, recipeError } from '../constants';
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const ingredients = await getIngredientsList();
   const recipes = await getRecipeDetails();
   return { props: { ingredients, recipes } };
@@ -33,6 +35,11 @@ export const updateIngredientList = (ingredient, checkedIngredients) => {
 };
 
 const Home = ({ recipes, ingredients }) => {
+  const ingredientsQuery =  useQuery('ingredients', getIngredientsList, {
+    initialData: ingredients,
+    initialStale: true
+  });
+
   const [isRecipeVisible, setRecipeVisible] = useState(false);
   const [checkedIngredients, setCheckedIngredients] = useState([]);
   const [recipeList, setRecipeList] = useState(recipes);
@@ -84,10 +91,14 @@ const Home = ({ recipes, ingredients }) => {
             <div className={styles.checkboxListTitle}>
               <p>Your Ingredients</p>
             </div>
-            <CheckboxList
-              ingredients={ingredients}
-              onClick={updateCheckedIngredients}
-            />
+            {ingredientsQuery.isLoading ? (
+              <p>Loading ingredients...</p>
+            ) : (
+              <CheckboxList
+                ingredients={ingredientsQuery.data}
+                onClick={updateCheckedIngredients}
+              />
+            )}
           </div>
         </div>
         <div className={styles.recipeContainer}>
@@ -122,6 +133,7 @@ const Home = ({ recipes, ingredients }) => {
         </div>
       </div>
       <div className={styles.footer}></div>
+      <ReactQueryDevtools />
     </div>
   );
 };
